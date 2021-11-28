@@ -1,0 +1,28 @@
+
+
+version: '3'
+services:
+
+ node1: 
+  build:
+    context: ./s1
+    dockerfile: ./Dockerfile
+  depends_on:
+   - mysql1
+  container_name: s1
+  ports:
+   - "80:8080"
+  volumes:
+   - /Users/trang/project/s1:/usr/src/app
+  command: "npx nodemon app/server.js"
+
+ mysql1:
+  image: mysql:5.7.31
+  container_name: db1
+  ports:
+   - "3306:3306"
+  environment:
+   MYSQL_ROOT_PASSWORD: admin
+   MYSQL_DATABASE: project
+
+
