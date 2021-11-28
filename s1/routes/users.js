@@ -8,7 +8,7 @@ router.get('/user-list', function (req, res, next) {
     db.query(sql, function (err, data, fields) {
         if (err) throw err;
         res.render('user-list', { title: 'User List', userData: data });
-        res.send(JSON.stringify(data));
+        // res.send(JSON.stringify(data));
     });
 });
 
