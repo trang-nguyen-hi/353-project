@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
+    <script src="/stylesheets/jquery-1.11.0.min.js"></script>
+    <script src="/stylesheets/bootstrap.min.js"></script>
+    <title>Customer <%= title %></title>
+</head>
+
+
+<body onload="init()">
+    <div class="container">
+        <h1 id= "<%= title %>" > Customer <%= title %> </h1>
+        <div class="row">
+            <div class="col-xs-6">
+                <label for="topic"> Report Title:</label><br> <br>
+                <input id="input" type="text" name="topic" value=""><br> <br>
+
+                <label for="data"> Report Content:</label><br> <br>
+                <textarea id="data" name="data" rows="10" cols="30"></textarea>
+            
+                <br>
+                <button onclick="sayHello()"> Submit </button>
+                <br>
+            </div>
+            <div class="col-xs-6">
+                <label for="posts"> Posts:</label><br> <br>
+
+                <form id="form">
+                    <p>Sort by:</p>
+                      <input type="radio" id="topicButton" name="sortBy" value="topic">
+                      <label for="topicButton">Report Title</label><br>
+                      <input type="radio" id="timestampButton" name="sortBy" value="timestamp">
+                      <label for="timestampButton">Timestamp</label><br>
+            
+                    <p>Sort order:</p>
+                      <input type="radio" id="ascendingButton" name="sortOrder" value="ASC">
+                      <label for="ascendingButton">Ascending order</label><br>
+                      <input type="radio" id="descendingButton" name="sortOrder" value="DESC">
+                      <label for="descendingButton">Descending order</label><br>
+                </form>
+            
+                <br>
+                <button onclick="sortTable()"> Sort </button>
+                <br>
+            
+                <textarea id="answer" rows="50" cols="70"></textarea>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script type="text/javascript">
+        function init() {
+            var http = new XMLHttpRequest();
+            var url = '/users/reports/<%= title %>/init';
+
+            http.open('GET', url, true);
+            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            http.onreadystatechange = function () {
+                if (http.readyState == 4 && http.status == 200) {
+
+                    var response = JSON.parse(http.responseText);
+
+                    document.getElementById("answer").value = response.answer;
+                }
+            };
+            http.send();
+            setTimeout('init()', 3000);
+        }
+
+        function sayHello() {
+            var http = new XMLHttpRequest();
+            var url = '/users/reports/<%= title %>/sayHello';
+            var params = 'topic=' + document.getElementById("input").value
+                + '&data=' + document.getElementById("data").value;
+
+            http.open('POST', url, true);
+            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            http.onreadystatechange = function () {
+                if (http.readyState == 4 && http.status == 200) {
+
+                    var response = JSON.parse(http.responseText);
+
+                    document.getElementById("answer").value = response.answer;
+                }
+            };
+            http.send(params);
+            let date_ob = new Date();
+            alert("Post added!");
+        }
+
+        function sortTable() {
+            var form = document.querySelector("form");
+            let data = new FormData(form);
+            var params = 'sortBy=' + data.get("sortBy")
+                + '&sortOrder=' + data.get("sortOrder");
+
+            var http = new XMLHttpRequest();
+            var url = '/users/reports/<%= title %>/sortTable';
+
+            http.open('PUT', url, true);
+            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            http.send(params);
+        }
+
+
+
+    </script>
+
+
+ 
+</body>
+
+</html>

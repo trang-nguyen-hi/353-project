@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
+  <script src="/stylesheets/jquery-1.11.0.min.js"></script>
+  <script src="/stylesheets/bootstrap.min.js"></script> 
+
+</head>
+
+<body>
+  <div class="container">
+    <h2>Staff List</h2>
+    <div class="row">
+      <div class="col-xs-6">
+        <table id="userTable" class="table table-bordered table-condensed table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Phone Number</th>
+              <th>Role</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <div class="col-xs-6">
+        <div class="panel panel-primary">
+
+          <form action="/users/edit/30" method="POST">
+            <div class="panel-heading">
+              Staff Information
+            </div>
+
+            <div class="panel-body">
+              <div class="form-group">
+                <label for="firstName">
+                  First Name
+                </label>
+                <input type="text" class="form-control" placeholder="Enter First Name" name="firstName" id="firstName">
+              </div>
+              <div class="form-group">
+                <label for="lastName">
+                  Last Name
+                </label>
+                <input type="text" class="form-control" placeholder="Enter Last Name" name="lastName" id="lastName">
+              </div>
+              <div class="form-group">
+                <label for="phoneNumber">
+                  Phone Number
+                </label>
+                <input type="tel" class="form-control" placeholder="123-456-7890" name="phoneNumber" id="phoneNumber">
+                <!-- pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"  -->
+              </div>
+              <div class="form-group">
+                <label for="role">
+                  Role
+                </label>
+                <select name="role" id="role">
+                    <option value="Staff">Staff</option>
+                    <option value="Manager">Manager</option>
+                  </select>
+              </div>
+            </div>
+            <div class="panel-footer">
+              <div class="row">
+                <div class="col-xs-12">
+                  <button type="button" id="updateButton" class="btn btn-primary" onclick="updateClick();">
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      userList();
+    });
+    // Next id for adding a new Product
+    var nextId = 1;
+    // ID of Product currently editing
+    var activeId = -1;
+
+    function customerDisplay(ctl) {
+      editRow = $(ctl).parents("tr");
+      var cols = editRow.children("td");
+
+      activeId = parseInt($(cols[0]).text());
+      $("#firstName").val($(cols[1]).text().replace(/\s+/g, ' ').trim());
+      $("#lastName").val($(cols[2]).text().replace(/\s+/g, ' ').trim());
+      $("#phoneNumber").val($(cols[3]).text().replace(/\s+/g, ' ').trim());
+      $("#role").val($(cols[4]).text().replace(/\s+/g, ' ').trim());
+    }
+
+    function updateClick() {
+      // Build product object from inputs
+      var customer = new Object();
+      customer.firstName = $("#firstName").val();
+      customer.lastName = $("#lastName").val();
+      customer.phoneNumber = $("#phoneNumber").val();
+      customer.role = $("#role").val();
+
+      if ($("#updateButton").text().trim() == "Add") {
+        userAdd(customer);
+      }
+      else {
+        customer.id = activeId;
+        userUpdate(customer);
+      }
+    }
+
+    function addClick() {
+      formClear();
+    }
+
+    function userUpdate(customer) {
+      fetch('/staffs/edit', {
+        method: 'post',
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        },
+        body: "firstName=" + customer.firstName +
+          "&lastName=" + customer.lastName +
+          "&phoneNumber=" + customer.phoneNumber +
+          "&role=" + customer.role +
+          "&id=" + customer.id
+      })
+        .then(function (data) {
+          return data.json();
+        })
+        .then(function (data) {
+          userList();
+          formClear();
+          $("#updateButton").text("Add");
+        })
+        .catch(function (error) {
+          console.log('Request failed', error);
+        });
+    }
+
+    function productUpdateSuccess(product) {
+      productUpdateInTable(product);
+    }
+
+    function userAdd(customer) {
+      fetch('/staffs/create', {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(
+          {
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            phoneNumber: customer.phoneNumber,
+            role: customer.role
+          }
+        )
+      })
+        .then(function (data) {
+          return data.json();
+        })
+        .then(function (data) {
+          userList();
+          formClear();
+        })
+        .catch(function (error) {
+          console.log('Request failed', error);
+        });
+    }
+
+    function productAddSuccess(product) {
+      productAddRow(product);
+      formClear();
+    }
+
+    // Update product in <table>
+    function productUpdateInTable(product) {
+      // Find Product in <table>
+      var row = $("#productTable button[data-id='" + product.ProductId + "']")
+        .parents("tr")[0];
+      // Add changed product to table
+      $(row).after(productBuildTableRow(product));
+      // Remove original product
+      $(row).remove();
+
+      // Clear form fields
+      formClear();
+
+      // Change Update Button Text
+      $("#updateButton").text("Add");
+    }
+
+    function userGet(ctl) {
+      // Get product id from data- attribute
+      editRow = $(ctl).parents("tr");
+      var cols = editRow.children("td");
+      activeId = parseInt($(cols[0]).text());
+
+      // Call Web API to get a Product
+      fetch('/staffs/edit/' + activeId, {
+        method: 'get',
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        },
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          userToFields(data);
+          $("#updateButton").text("Update");
+        })
+        .catch(function (error) {
+          console.log('Request failed', error);
+        });
+    }
+
+    function userToFields(user) {
+      $("#firstName").val(user.firstName);
+      $("#lastName").val(user.lastName);
+      $("#phoneNumber").val(user.phoneNumber);
+      $("#role").val(user.role);
+    }
+
+    // Get all Products to display
+    function userList() {
+      // $("#userTable").empty();
+      // $("#userTable").removeChild($("#userTable").getElementsByTagName("tbody")[0]); // Remove first instance of body
+      if ($("#userTable tbody").length != 0) {
+        var table = document.getElementById('userTable');
+        var row = document.getElementsByTagName('tbody')[0];
+        row.parentNode.removeChild(row);
+      }
+
+      fetch('/staffs/staff-list', {
+        method: 'get',
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        },
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          userListSuccess(data);
+        })
+        .catch(function (error) {
+          console.log('Request failed', error);
+        });
+      // setTimeout('userList()',1000);
+    }
+
+    // Display all Products returned from Web API call
+    function userListSuccess(data) {
+      for (const element of data) {
+        // ...use `element`...
+        userAddRow(element);
+      }
+    }
+
+    // Add Product row to <table>
+    function userAddRow(element) {
+      // First check if a <tbody> tag exists, add one if not
+      if ($("#userTable tbody").length == 0) {
+        $("#userTable").append("<tbody></tbody>");
+      }
+
+      // Append row to <table>
+      $("#userTable tbody").append(
+        userBuildTableRow(element));
+    }
+
+    // Build a <tr> for a row of table data
+    function userBuildTableRow(element) {
+        console.log(element);
+        var ret = "<tr>" +
+        "<td>" + element.id + "</td>" +
+        "<td>" + element.firstName + "</td>" +
+        "<td>" + element.lastName + "</td>" +
+        "<td>" + element.phoneNumber + "</td>" +
+        "<td>" + element.role + "</td>" +
+        "<td>" +
+        "<button type='button' " +
+        "onclick='userGet(this);' " +
+        "class='btn btn-default' " +
+        "data-id='" + element.id + "'>" +
+        "<span class='glyphicon glyphicon-edit' />" +
+        "</button>" +
+        "</td>" +
+        "<td>" +
+        "<button type='button' " +
+        "onclick='userDelete(this);' " +
+        "class='btn btn-default' " +
+        "data-id='" + element.id + "'>" +
+        "<span class='glyphicon glyphicon-remove' />" +
+        "</button>" +
+        "</td>" +
+        "</tr>";
+
+      return ret;
+    }
+
+    // Delete product from <table>
+    function userDelete(ctl) {
+      // Get product id from data- attribute
+      editRow = $(ctl).parents("tr");
+      var cols = editRow.children("td");
+      activeId = parseInt($(cols[0]).text());
+
+      // Call Web API to get a Product
+      fetch('/staffs/delete/' + activeId, {
+        method: 'get',
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        },
+      })
+        .then(function () {
+          userList();
+        });
+    }
+
+    // Clear form fields
+    function formClear() {
+      $("#firstName").val("");
+      $("#lastName").val("");
+      $("#phoneNumber").val("");
+      $("#role").val("");
+    }
+
+  </script>
+
+</body>
+
+</html>

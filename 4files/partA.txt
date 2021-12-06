@@ -1,9 +1,0 @@
-Le Phuong Trang Nguyen
-Len054
-11280441
-
-Part A:
-
-CREATE DATABASE assignment;
-USE assignment;
-CREATE TABLE posts( topic VARCHAR(255) NOT NULL, data TEXT(65535) NOT NULL, timestamp DATETIME NOT NULL);

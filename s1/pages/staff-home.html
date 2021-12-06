@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
+        <script src="/stylesheets/jquery-1.11.0.min.js"></script>
+        <script src="/stylesheets/bootstrap.min.js"></script> 
+
+          </head> 
+        
+          <body onload="change('customer')">
+            <form action="/login/logout" method="get">
+                <input type="submit" name="Logout" class="btn btn-primary" value="Logout" />
+            </form>
+            <div class="container">
+                <h1>Staff Dashboard</h1>
+            </div>
+            <p></p>
+             <div id="includedContent"></div>
+             <script>
+                function change (string){
+                    if (string == 'staff'){
+                       $("#includedContent").load("staff-list.html"); 
+                    }
+                    else if (string == 'customer'){
+                        // $("#includedContent").empty();
+                       $("#includedContent").load("user-list.html"); 
+                    }
+                }
+            </script>
+
+          </body> 
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
+        <script src="/stylesheets/jquery-1.11.0.min.js"></script>
+        <script src="/stylesheets/bootstrap.min.js"></script> 
+
+          </head> 
+        
+          <body onload="change('staff')">
+            <form action="/login/logout" method="get">
+                <input type="submit" class="btn btn-primary" name="Logout" value="Logout" />
+            </form>
+            <div class="container">
+                <h1>Manager Dashboard</h1>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button type="button" id="staffList" class="btn btn-primary" onclick="change('staff')">
+                            Staff List
+                        </button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button type="button" id="customerList" class="btn btn-primary" onclick="change('customer')">
+                            Customer List
+                        </button>
+                    </div>
+                </div>
+            </div>
+             <div id="includedContent"></div>
+             <script>
+                function change (string){
+                    if (string == 'staff'){
+                       $("#includedContent").load("staff-list.html"); 
+                    }
+                    else if (string == 'customer'){
+                        // $("#includedContent").empty();
+                       $("#includedContent").load("user-list.html"); 
+                    }
+                }
+            </script>
+
+          </body> 
+</html>

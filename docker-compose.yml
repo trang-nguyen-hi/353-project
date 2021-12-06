@@ -14,7 +14,7 @@ services:
    - "80:8080"
   volumes:
    - /Users/trang/project/s1:/usr/src/app
-  command: "npx nodemon app/server.js"
+  command: "npx nodemon app/app.js"
 
  mysql1:
   image: mysql:5.7.31

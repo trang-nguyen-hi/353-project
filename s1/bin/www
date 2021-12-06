@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+const fs = require('fs');
+const key = fs.readFileSync('/usr/src/app/key.pem');
+const cert = fs.readFileSync('/usr/src/app/cert.pem');
+
 /**
  * Module dependencies.
  */
@@ -7,6 +11,7 @@
 var app = require('../app');
 var debug = require('debug')('nodeapp:server');
 var http = require('http');
+// const https = require('https');
 
 /**
  * Get port from environment and store in Express.
@@ -20,6 +25,7 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+// const server = https.createServer({key: key, cert: cert }, app);
 
 /**
  * Listen on provided port, on all network interfaces.
