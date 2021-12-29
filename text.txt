@@ -1,3 +1,14 @@
+npm install -g get-project-tree
+project-tree --ignore node_modules --ignore .git --ignore .DS_store --indent 4
+
+1st terminal:
+csh ./run.csh
+npm start
+
+2nd terminal:
+docker exec -it db1 /bin/bash
+mysql -uroot -padmin
+use project
 CREATE TABLE `users` (   `id` int(10) UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
                           `firstName` varchar(255) DEFAULT NULL,
                            `lastName` varchar(255) DEFAULT NULL,
@@ -18,7 +29,7 @@ CREATE TABLE `staffs` (   `id` int(10) UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREM
                           `firstName` varchar(255) DEFAULT NULL,
                            `lastName` varchar(255) DEFAULT NULL,
                            `phoneNumber` varchar(255) DEFAULT NULL),
-                           FOREIGN KEY (roleID) REFERENCES roles(id) ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+                           <!-- FOREIGN KEY (roleID) REFERENCES roles(id) ) ENGINE=InnoDB DEFAULT CHARSET=latin1; -->
 
 
 INSERT INTO `staffs` (username, password, roleID, firstName, lastName, phoneNumber) VALUES ('test', 'test', 2, 'trang', 'nguyen', '2424242');
@@ -30,3 +41,4 @@ CREATE TABLE reports ( `id` int(10) UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT
                           topic VARCHAR(255) NOT NULL,
                            data TEXT(65535) NOT NULL,
                         timestamp DATETIME NOT NULL);
+
