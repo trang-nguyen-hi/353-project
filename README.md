@@ -24,13 +24,13 @@ It uses:
 Open 2 terminals:
 
 #### 1st terminal:
-csh ./run.csh
+csh ./run.csh\
 npm start
 
 #### 2nd terminal:
-docker exec -it db1 /bin/bash
-mysql -uroot -padmin
-use project
+docker exec -it db1 /bin/bash\
+mysql -uroot -padmin\
+use project\
 CREATE TABLE `users` (   `id` int(10) UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
                           `firstName` varchar(255) DEFAULT NULL,
                            `lastName` varchar(255) DEFAULT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE `staffs` (   `id` int(10) UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREM
                           `firstName` varchar(255) DEFAULT NULL,
                            `lastName` varchar(255) DEFAULT NULL,
                            `phoneNumber` varchar(255) DEFAULT NULL),
-                           <!-- FOREIGN KEY (roleID) REFERENCES roles(id) ) ENGINE=InnoDB DEFAULT CHARSET=latin1; -->
+                           <!-- FOREIGN KEY (roleID) REFERENCES roles(id) ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 INSERT INTO `staffs` (username, password, roleID, firstName, lastName, phoneNumber) VALUES ('test', 'test', 1, 'trang', 'nguyen', '2424242');
